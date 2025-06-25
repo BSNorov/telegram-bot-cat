@@ -1,7 +1,7 @@
 package com.telegrambot.telegramcatbot.bot;
 
 import com.telegrambot.telegramcatbot.handler.BotCommandHandler;
-import com.telegrambot.telegramcatbot.session.UserSessionRepository;
+import com.telegrambot.telegramcatbot.handler.BotRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,11 +19,9 @@ public class TelegramCatBot extends TelegramLongPollingBot {
     private String botToken;
 
     private final BotCommandHandler commandHandler;
-    private final UserSessionRepository sessionRepository;
 
-    public TelegramCatBot(BotCommandHandler commandHandler, UserSessionRepository sessionRepository) {
+    public TelegramCatBot(BotCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
-        this.sessionRepository = sessionRepository;
     }
 
     @Override
@@ -38,9 +36,13 @@ public class TelegramCatBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // TODO: делегируем обработку обновлений
-        commandHandler.handleUpdate(update);
-    }
+        if (update.getMessage() == null || update.getMessage().getFrom() == null) return;
 
-    // TODO: Основная логика меню и команд будет добавлена в следующем MR
+        Long userId = update.getMessage().getFrom().getId();
+        String userName = update.getMessage().getFrom().getUserName();
+        String text = update.getMessage().getText();
+
+        BotRequest request = new BotRequest(userId, userName, text);
+        commandHandler.handleRequest(request);
+    }
 }
