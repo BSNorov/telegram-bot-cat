@@ -1,14 +1,12 @@
 package com.telegrambot.telegramcatbot.bot;
 
-import com.telegrambot.telegramcatbot.controller.CatController;
+import com.telegrambot.telegramcatbot.handler.BotCommandHandler;
+import com.telegrambot.telegramcatbot.session.UserSessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -20,13 +18,12 @@ public class TelegramCatBot extends TelegramLongPollingBot {
     @Value("${telegram.bot.token}")
     private String botToken;
 
-    private final Map<Long, UserState> userStates = new HashMap<>();
-    private final Map<Long, String> userNames = new HashMap<>();
+    private final BotCommandHandler commandHandler;
+    private final UserSessionRepository sessionRepository;
 
-    private final CatController catController;
-
-    public TelegramCatBot(CatController catController) {
-        this.catController = catController;
+    public TelegramCatBot(BotCommandHandler commandHandler, UserSessionRepository sessionRepository) {
+        this.commandHandler = commandHandler;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
@@ -41,8 +38,9 @@ public class TelegramCatBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // TODO: Реализация обработки апдейтов
+        // TODO: делегируем обработку обновлений
+        commandHandler.handleUpdate(update);
     }
 
-    // TODO: Основная логика меню и обратных вызовов будет добавлена в следующем MR
+    // TODO: Основная логика меню и команд будет добавлена в следующем MR
 }
