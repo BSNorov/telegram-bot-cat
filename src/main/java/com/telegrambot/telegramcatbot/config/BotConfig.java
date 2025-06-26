@@ -1,25 +1,16 @@
 package com.telegrambot.telegramcatbot.config;
 
-import com.telegrambot.telegramcatbot.bot.TelegramCatBot;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Configuration
-@RequiredArgsConstructor
+@Getter
 public class BotConfig {
 
-    private final TelegramCatBot telegramCatBot;
+    @Value("${telegram.bot.token}")
+    private String token;
 
-    @PostConstruct
-    public void registerBot() {
-        try {
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(telegramCatBot);
-        } catch (Exception e) {
-            throw new RuntimeException("Ошибка при регистрации бота", e);
-        }
-    }
+    @Value("${telegram.bot.name}")
+    private String botName;
 }
