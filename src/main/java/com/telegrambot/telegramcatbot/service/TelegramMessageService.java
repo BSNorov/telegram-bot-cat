@@ -14,7 +14,7 @@ public interface TelegramMessageService {
     
     InlineKeyboardMarkup buildMainMenuKeyboard();
     InlineKeyboardMarkup buildCatViewingKeyboard(Long catId, boolean hasNext, boolean hasPrevious);
-    InlineKeyboardMarkup buildMyCatsKeyboard(Page<Cat> catsPage);
+    InlineKeyboardMarkup buildMyCatsKeyboard(Long catId, Page<Cat> catsPage);
     InlineKeyboardMarkup buildPaginationKeyboard(int currentPage, int totalPages, String callbackPrefix);
 }
 

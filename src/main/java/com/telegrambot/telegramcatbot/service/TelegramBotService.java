@@ -6,3 +6,4 @@ public interface TelegramBotService {
     TelegramLongPollingBot getBot();
     void setBot(TelegramLongPollingBot bot);
 }
+

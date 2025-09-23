@@ -122,6 +122,16 @@ public class CatController implements BotCommandHandler {
             int page = Integer.parseInt(callbackData.substring(13));
             sessionRepository.setUserPage(userId, page);
             showMyCats(userId, page);
+        } else if (callbackData.startsWith("delete_")) {
+            Long catId = Long.parseLong(callbackData.substring(7));
+            boolean deleted = catService.deleteCat(catId, userId);
+            if (deleted) {
+                messageService.sendMessage(userId, "Котик удален ✅");
+            } else {
+                messageService.sendMessage(userId, "Не удалось удалить котика. Проверьте права.");
+            }
+            int page = sessionRepository.getUserPage(userId);
+            showMyCats(userId, page);
         }
     }
 
@@ -274,7 +284,7 @@ public class CatController implements BotCommandHandler {
         );
         
         messageService.sendPhoto(userId, cat.getFileId(), caption);
-        messageService.sendMessage(userId, "Управление:", messageService.buildMyCatsKeyboard(catsPage));
+        messageService.sendMessage(userId, "Управление:", messageService.buildMyCatsKeyboard(cat.getId(), catsPage));
     }
 
     private void handleLikeCat(Long userId, Long catId, boolean isLike, Integer messageId) {

@@ -216,9 +216,28 @@ public class TelegramMessageServiceImpl implements TelegramMessageService {
     }
 
     @Override
-    public InlineKeyboardMarkup buildMyCatsKeyboard(Page<Cat> catsPage) {
+    public InlineKeyboardMarkup buildMyCatsKeyboard(Long catId, Page<Cat> catsPage) {
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        // Actions row: like/dislike/delete
+        List<InlineKeyboardButton> actionsRow = new ArrayList<>();
+        InlineKeyboardButton likeBtn = new InlineKeyboardButton();
+        likeBtn.setText("👍 Нравится");
+        likeBtn.setCallbackData("like_" + catId);
+        actionsRow.add(likeBtn);
+
+        InlineKeyboardButton dislikeBtn = new InlineKeyboardButton();
+        dislikeBtn.setText("👎 Не нравится");
+        dislikeBtn.setCallbackData("dislike_" + catId);
+        actionsRow.add(dislikeBtn);
+
+        InlineKeyboardButton deleteBtn = new InlineKeyboardButton();
+        deleteBtn.setText("🗑️ Удалить");
+        deleteBtn.setCallbackData("delete_" + catId);
+        actionsRow.add(deleteBtn);
+
+        rows.add(actionsRow);
 
         if (catsPage.getTotalPages() > 1) {
             List<InlineKeyboardButton> paginationRow = new ArrayList<>();
